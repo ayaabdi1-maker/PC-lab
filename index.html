@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="kk">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PC LAB: ЖҮЙЕНІ ҚҰТҚАР!</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#eef5e8;color:#173d34;min-height:100vh}
+body:before{content:"";position:fixed;inset:0;background:radial-gradient(circle at 15% 10%,#fff 0 10%,transparent 28%),radial-gradient(circle at 90% 80%,#d7ead7 0 12%,transparent 30%);z-index:-2}
+.wrap{max-width:1180px;margin:auto;padding:18px}.hud{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:#173d34;color:white;border-radius:22px;padding:12px 16px;box-shadow:0 8px 0 #bfd4c2}
+.logo{font-size:25px;font-weight:1000;margin-right:auto}.logo b{color:#86e0a9}.badge{background:#28584a;border-radius:14px;padding:9px 12px;font-weight:800}.bar{height:12px;background:#cfe0cf;border-radius:30px;margin:17px 4px;overflow:hidden}.bar i{display:block;height:100%;background:#39b777;width:0;transition:.4s}
+.panel{background:#fffdf7;border:3px solid #bddac4;border-radius:28px;padding:20px;box-shadow:0 10px 0 #cfdfcf;position:relative;overflow:hidden}
+.head{display:flex;gap:14px;align-items:center}.robot{font-size:68px;filter:drop-shadow(0 5px 0 #d7e4d6)}h1{font-size:clamp(24px,4vw,36px);margin:0}.desc{color:#557268;margin-top:6px;line-height:1.4}
+.lab{margin-top:18px;background:#eaf3e7;border:3px solid #aacdb4;border-radius:24px;padding:16px;min-height:410px;position:relative}
+.pc{width:min(530px,95%);height:330px;margin:auto;background:#294e44;border:9px solid #183d34;border-radius:28px;position:relative;box-shadow:inset 0 0 0 5px #6e9988,0 15px 30px #0002}
+.pc:before{content:"SYSTEM UNIT";position:absolute;right:15px;bottom:10px;color:#9bd9b0;font-size:11px;letter-spacing:2px}
+.grid{position:absolute;inset:20px 20px 38px;display:grid;grid-template-columns:1.35fr 1fr 1fr;grid-template-rows:1fr 1fr;gap:10px}
+.part{border:3px solid #7ba793;background:#dce9dd;border-radius:15px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-weight:900;padding:6px;cursor:pointer;transition:.18s;user-select:none}.part:hover{transform:scale(1.04)}.part .ic{font-size:38px}.part small{font-weight:700;color:#49675d}
+.glow{box-shadow:0 0 0 5px #a5efbb,0 0 28px #56e488!important;background:#eaffee!important}.bad{animation:shake .25s 2;background:#ffdeda!important;border-color:#df6b59!important}@keyframes shake{50%{transform:translateX(7px)}}
+.msg{margin:14px auto 0;max-width:750px;background:#173d34;color:#fff;border-radius:16px;padding:12px;text-align:center;font-weight:800;transition:.2s}.msg.error{background:#c9473b;box-shadow:0 0 0 4px #ffd7d2;animation:shake .25s 2}.msg.ok{background:#23895a;box-shadow:0 0 0 4px #d5f4df}
+.tools{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:15px}.tool{background:#fff;border:3px solid #bcd8c1;border-radius:16px;padding:12px 14px;font-weight:900;cursor:grab;min-width:140px;text-align:center}.tool span{font-size:30px;display:block}
+.wires{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:22px auto;max-width:760px}.wire{background:#fff;border:3px dashed #95bba1;border-radius:18px;padding:18px;text-align:center;cursor:pointer;font-weight:900}.wire.on{background:#dff8e7;border-style:solid;border-color:#37ae6c;box-shadow:0 0 20px #77d99b}
+.clues{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:15px 0}.clue{background:#fff;border:2px solid #c9ddcc;border-radius:16px;padding:15px}.choices{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}.choice{border:3px solid #c0d9c5;background:#fff;border-radius:16px;padding:12px 16px;font-weight:900;cursor:pointer}
+.timer{font-size:30px;font-weight:1000;text-align:center;color:#c54d40}.bossgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px auto;max-width:780px}.fault{background:#fff;border:3px solid #d8caa5;border-radius:17px;padding:15px;text-align:center;cursor:pointer;font-weight:900}.fault.fixed{background:#dcf5e5;border-color:#35ad6a}.final{text-align:center;padding:25px}.final .big{font-size:90px}.rank{display:inline-block;background:#173d34;color:#bff0cd;border-radius:18px;padding:13px 22px;font-size:25px;font-weight:1000}.scorebig{font-size:54px;font-weight:1000;color:#25945e;margin:12px}.btn{border:0;background:#287f5b;color:#fff;padding:14px 24px;border-radius:15px;font-weight:900;font-size:17px;cursor:pointer}
+.flashlight{position:absolute;width:130px;height:130px;border-radius:50%;pointer-events:none;box-shadow:0 0 0 9999px rgba(19,42,35,.82);border:4px solid #fff8;display:none;z-index:5}
+@media(max-width:650px){.wrap{padding:9px}.panel{padding:13px}.robot{font-size:48px}.lab{min-height:390px}.pc{height:300px}.grid{grid-template-columns:1fr 1fr}.wires,.bossgrid{grid-template-columns:1fr 1fr}.clues{grid-template-columns:1fr}}
+</style></head>
+<body>
+<div id="startScreen" style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px">
+  <div class="panel" style="max-width:720px;width:100%;text-align:center">
+    <div style="font-size:90px">🤖🖥️</div>
+    <h1>PC LAB: ЖҮЙЕНІ ҚҰТҚАР!</h1>
+    <p class="desc" style="font-size:18px">Жүйелік блокта ақау пайда болды. 5 миссияны орындап, компьютерді қайта іске қос!</p>
+    <div style="background:#edf6eb;border:3px solid #c3ddc8;border-radius:20px;padding:18px;margin:20px 0">
+      <b>👤 Оқушының аты-жөні</b>
+      <input id="studentName" maxlength="50" placeholder="Аты-жөніңді жаз..." style="display:block;width:100%;margin-top:10px;padding:15px;border:3px solid #b7d3bd;border-radius:14px;font-size:18px;outline:none">
+    </div>
+    <button class="btn" style="font-size:20px;padding:16px 28px" onclick="startGame()">🚀 МИССИЯНЫ БАСТАУ</button>
+    <p style="color:#698077;font-size:13px;margin-top:15px">Қате жауап: −5 ұпай • Ойыннан шығарылмайсың • Қайта таңдауға болады</p>
+  </div>
+</div>
+<div class="wrap" id="gameWrap" style="display:none">
+<div class="hud"><div class="logo">🧪 PC <b>LAB</b></div><div class="badge">👤 <span id="studentHud"></span></div><div class="badge">МИССИЯ <span id="mission">1</span>/5</div><div class="badge">⭐ <span id="score">0</span></div></div>
+<div class="bar"><i id="bar"></i></div><div id="app"></div></div>
+<script>
+const P=[
+{n:"Процессор",i:"🧠",f:"командаларды өңдейді"},
+{n:"RAM",i:"⚡",f:"деректерді уақытша сақтайды"},
+{n:"SSD",i:"💾",f:"файлдарды тұрақты сақтайды"},
+{n:"Бейнекарта",i:"🎮",f:"графиканы өңдейді"},
+{n:"Аналық тақша",i:"🟩",f:"бөлшектерді байланыстырады"},
+{n:"Қуат көзі",i:"🔌",f:"электр қуатын береді"},
+{n:"Салқындатқыш",i:"🌀",f:"қызып кетуден қорғайды"}];
+let s=0,mission=1,locked=false,timer=null;
+const app=document.getElementById("app"),rnd=a=>[...a].sort(()=>Math.random()-.5);
+function hud(){score.textContent=s;document.getElementById("mission").textContent=Math.min(mission,5);bar.style.width=((mission-1)/5*100)+"%"}
+function sound(f=500){try{let a=new AudioContext(),o=a.createOscillator(),g=a.createGain();o.frequency.value=f;o.connect(g);g.connect(a.destination);g.gain.value=.035;o.start();o.stop(a.currentTime+.1)}catch(e){}}
+function lose(msg){
+ s=Math.max(0,s-5);sound(160);hud();
+ let e=document.getElementById("msg");
+ if(e){e.classList.remove("ok");e.classList.add("error");e.innerHTML="❌ ҚАТЕ! "+msg+" −5 ұпай. Қайта таңда!";}
+}
+function win(msg,pts=20){if(locked)return;locked=true;s+=pts;sound(720);hud();
+ let e=document.getElementById("msg");if(e){e.classList.add("ok");e.innerHTML="✅ ДҰРЫС! "+msg}
+ setTimeout(()=>{mission++;locked=false;render()},850)}
+function say(x){let e=document.getElementById("msg");if(e)e.innerHTML=x}
+function shell(title,desc,inside){app.innerHTML=`<section class="panel"><div class="head"><div class="robot">🤖</div><div><h1>${title}</h1><div class="desc">${desc}</div></div></div><div class="lab">${inside}</div><div id="msg" class="msg">AI-робот: Миссияны орындауға дайынсың ба?</div></section>`;hud()}
+function pcParts(list=P){return `<div class="pc"><div class="grid">${list.slice(0,6).map((p,i)=>`<div class="part" data-n="${p.n}"><span class="ic">${p.i}</span>${p.n}<small>${p.f}</small></div>`).join("")}</div></div>`}
+function render(){
+ clearInterval(timer);
+ if(mission===1){let target=P[Math.floor(Math.random()*P.length)], list=rnd(P); if(!list.slice(0,6).some(x=>x.n===target.n))list[0]=target;
+ shell("🔦 1. РЕНТГЕН-СКАНЕР",`Қараңғы жүйелік блоктың ішінен <b>${target.n}</b> құрылғысын фонарьмен тауып, бас!`,
+ `<div id="dark" style="position:relative">${pcParts(list)}<div id="flash" class="flashlight"></div></div>`);
+ let d=document.getElementById("dark"),f=document.getElementById("flash");f.style.display="block";
+ d.onmousemove=e=>{let r=d.getBoundingClientRect();f.style.left=(e.clientX-r.left-65)+"px";f.style.top=(e.clientY-r.top-65)+"px"};
+ d.ontouchmove=e=>{let q=e.touches[0],r=d.getBoundingClientRect();f.style.left=(q.clientX-r.left-65)+"px";f.style.top=(q.clientY-r.top-65)+"px"};
+ document.querySelectorAll(".part").forEach(x=>x.onclick=()=>{if(x.dataset.n===target.n){x.classList.add("glow");win("Сканер дұрыс құрылғыны тапты!")}else{x.classList.add("bad");lose("Бұл басқа құрылғы.")}});
+ }
+ else if(mission===2){let chosen=rnd(P).slice(0,4);
+ shell("🧲 2. МАГНИТТІК ЖӨНДЕУ","Бөлшектерді өз қызметі жазылған ұяшыққа сүйреп апар. Телефонда: бөлшекті бас → сәйкес ұяшықты бас.",
+ `<div class="tools">${chosen.map(p=>`<div class="tool" draggable="true" data-n="${p.n}"><span>${p.i}</span>${p.n}</div>`).join("")}</div>
+ <div class="options" style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:20px">${rnd(chosen).map(p=>`<div class="part drop" data-n="${p.n}" style="min-height:90px">${p.f}</div>`).join("")}</div>`);
+ let selected=null,done=0;
+ document.querySelectorAll(".tool").forEach(t=>{t.onclick=()=>{selected=t;t.classList.add("glow")};t.ondragstart=e=>e.dataTransfer.setData("x",t.dataset.n)});
+ document.querySelectorAll(".drop").forEach(d=>{d.ondragover=e=>e.preventDefault();d.ondrop=e=>check(d,e.dataTransfer.getData("x"));d.onclick=()=>selected&&check(d,selected.dataset.n);
+ function check(slot,n){if(slot.dataset.n===n&&!slot.classList.contains("glow")){slot.classList.add("glow");slot.innerHTML="✅ "+n+"<br><small>"+slot.textContent+"</small>";done++;s+=5;sound(650);hud();if(done===4)win("Барлық бөлшек дұрыс сәйкестендірілді!",0)}else {slot.classList.add("bad");lose("Қызметі сәйкес емес.");setTimeout(()=>slot.classList.remove("bad"),700)}}})}
+ else if(mission===3){
+ shell("⚡ 3. ЭНЕРГИЯ ЖОЛЫ","Қуат көзінен бастап энергияны дұрыс ретпен өткіз. Жасыл жолды толық жақ!",
+ `<div style="text-align:center;font-size:22px;font-weight:900;margin:10px">⚡ Энергия тізбегін өзің іске қос</div>
+ <div class="wires">
+ <div class="wire" data-k="1"><span style="font-size:42px;filter:grayscale(1);opacity:.35">🔌</span><br>Қуат көзі</div>
+ <div class="wire" data-k="2"><span style="font-size:42px;filter:grayscale(1);opacity:.35">🟩</span><br>Аналық тақша</div>
+ <div class="wire" data-k="3"><span style="font-size:42px;filter:grayscale(1);opacity:.35">🖥️</span><br>Құрылғылар</div></div>
+ <div style="text-align:center;color:#668078;font-weight:800">Карточкаларды дұрыс ретпен бас. Дұрыс таңдағанда ғана энергия жанады.</div>`);
+ let next=1;document.querySelectorAll(".wire").forEach(w=>w.onclick=()=>{if(+w.dataset.k===next){w.classList.add("on");let ic=w.querySelector("span");if(ic){ic.style.filter="none";ic.style.opacity="1";ic.style.textShadow="0 0 20px #43e681"}sound(500+next*100);next++;if(next===4)win("Энергия барлық құрылғыға жетті!")}else {w.classList.add("bad");lose("Энергия жолының ретін тексер.");setTimeout(()=>w.classList.remove("bad"),700)}});
+ }
+ else if(mission===4){let cases=[
+ ["Ойын ашылғанда сурет үзіліп, графика баяулайды.","GPU жүктемесі өте жоғары.","Басқа бағдарламалар қалыпты жұмыс істейді.","Бейнекарта"],
+ ["Компьютер бірнеше минуттан кейін қатты қызады.","Температура тез көтеріледі.","Корпустан желдеткіш дыбысы естілмейді.","Салқындатқыш"],
+ ["Көп бағдарлама ашқанда компьютер баяулайды.","Уақытша жад бос орны азайды.","Файлдар дискіде бар.","RAM"],
+ ["Қосу батырмасы басылады, бірақ бөлшектерге қуат жетпейді.","Розетка жұмыс істеп тұр.","Ішкі құрылғылар жанбайды.","Қуат көзі"]];let c=cases[Math.floor(Math.random()*cases.length)];
+ shell("🕵️ 4. «КІМ КІНӘЛІ?»",`Ақау: <b>${c[0]}</b>. Екі дәлелді зертте де күдіктіні таңда.`,
+ `<div class="clues"><div class="clue">🔎 Дәлел A<br><b>${c[1]}</b></div><div class="clue">🔎 Дәлел B<br><b>${c[2]}</b></div></div><div class="choices">${rnd(P).slice(0,5).map(p=>`<button class="choice" data-n="${p.n}">${p.i} ${p.n}</button>`).join("")}</div>`);
+ if(![...document.querySelectorAll(".choice")].some(x=>x.dataset.n===c[3])){let b=document.querySelector(".choice"),p=P.find(x=>x.n===c[3]);b.dataset.n=p.n;b.innerHTML=p.i+" "+p.n}
+ document.querySelectorAll(".choice").forEach(b=>b.onclick=()=>b.dataset.n===c[3]?win("Дәлелдер бойынша ақау көзі дұрыс анықталды!"):lose("Дәлелдерге қайта қара."));
+ }
+ else if(mission===5){let faults=rnd([
+ ["🖥️<br><span style='font-size:24px'>⏳❄️</span><br><small>Компьютер өте баяу, командалар кеш орындалады</small>","Процессор"],
+ ["🪟 🪟 🪟<br><span style='font-size:24px'>🐢</span><br><small>Көп терезе ашылғанда компьютер баяулайды</small>","RAM"],
+ ["📁<br><span style='font-size:24px'>❌ 💾</span><br><small>Файлдар сақталмайды және диск көрінбейді</small>","SSD"],
+ ["🌡️🔥<br><span style='font-size:24px'>🖥️💨</span><br><small>Компьютер қатты қызып барады</small>","Салқындатқыш"],
+ ["🔘 ➜ 🖥️<br><span style='font-size:24px'>⚫</span><br><small>Қосу батырмасы басылды, бірақ жүйе жанбайды</small>","Қуат көзі"],
+ ["🎮 ➜ 🖥️<br><span style='font-size:24px'>▧▧⚠️</span><br><small>Ойын суреті үзіліп, графика бұзылады</small>","Бейнекарта"]
+ ]).slice(0,3);
+ shell("🚨 BOSS LEVEL — 60 СЕКУНД","Үш ақауды уақыт біткенше жөнде! Әр карточканы басып, дұрыс құрылғыны таңда.",
+ `<div class="timer">⏱️ <span id="time">60</span></div><div class="bossgrid">${faults.map((f,i)=>`<div class="fault" data-i="${i}" style="font-size:48px;min-height:175px;display:flex;flex-direction:column;justify-content:center">${f[0]}<br><b style="font-size:13px;color:#577268">Ақауды зерттеу үшін бас</b></div>`).join("")}</div><div id="bossChoices" class="choices"></div>`);
+ let fixed=0,sec=60;timer=setInterval(()=>{sec--;let e=document.getElementById("time");if(e)e.textContent=sec;if(sec<=0){sec=60;s=Math.max(0,s-5);hud();say("⏱️ Уақыт аяқталды: −5 ұпай. Жалғастыра бер!")}},1000);
+ document.querySelectorAll(".fault").forEach(f=>f.onclick=()=>{if(f.classList.contains("fixed"))return;let idx=+f.dataset.i,answer=faults[idx][1],box=document.getElementById("bossChoices");box.innerHTML=rnd(P).slice(0,5).map(p=>`<button class="choice" data-n="${p.n}">${p.i} ${p.n}</button>`).join("");
+ if(![...box.children].some(x=>x.dataset.n===answer)){let b=box.children[0],p=P.find(x=>x.n===answer);b.dataset.n=p.n;b.innerHTML=p.i+" "+p.n}
+ [...box.children].forEach(b=>b.onclick=()=>{if(b.dataset.n===answer){f.classList.add("fixed");f.innerHTML="✅ ЖӨНДЕЛДІ";box.innerHTML="";fixed++;s+=7;sound(760);hud();if(fixed===3){clearInterval(timer);s+=Math.floor(sec/6);mission++;setTimeout(render,500)}}else {b.classList.add("bad");lose("Бұл ақауға басқа құрылғы жауап береді.");setTimeout(()=>b.classList.remove("bad"),700)}})})}
+ else final();
+}
+function startGame(){
+ let n=document.getElementById("studentName").value.trim();
+ if(!n){document.getElementById("studentName").style.borderColor="#d65447";document.getElementById("studentName").focus();return}
+ window.student=n;document.getElementById("startScreen").style.display="none";document.getElementById("gameWrap").style.display="block";
+ document.getElementById("studentHud").textContent=n;render();
+}
+function final(){bar.style.width="100%";let rank=s>=95?"PC ENGINEER — LEVEL 3 🏆":s>=75?"PC ENGINEER — LEVEL 2 🥇":"PC ENGINEER — LEVEL 1 ⭐";app.innerHTML=`<section class="panel final"><div class="big">🤖⚡🖥️</div><h1>SYSTEM ONLINE!</h1><p><b>${window.student||"Оқушы"}</b>, зертханадағы компьютер қайта іске қосылды!</p><div class="rank">${rank}</div><div class="scorebig">${s} ұпай</div><button class="btn" onclick="location.reload()">🔄 Жаңа миссия</button></section>`;confetti()}
+function gameOver(){clearInterval(timer);app.innerHTML=`<section class="panel final"><div class="big">🤖🔧</div><h1>ЖҮЙЕ ӘЛІ ЖӨНДЕЛМЕДІ</h1><p>Инженер, тағы бір рет байқап көр!</p><div class="scorebig">${s} ұпай</div><button class="btn" onclick="location.reload()">🚀 Қайта бастау</button></section>`}
+function confetti(){for(let i=0;i<55;i++){let x=document.createElement("div");x.textContent=["✨","⭐","⚡","🟢"][i%4];x.style.cssText=`position:fixed;left:${Math.random()*100}vw;top:-30px;font-size:${16+Math.random()*20}px;z-index:99;transition:2.2s`;document.body.appendChild(x);setTimeout(()=>{x.style.top="105vh";x.style.transform=`rotate(${Math.random()*700}deg)`},20);setTimeout(()=>x.remove(),2400)}}
+// Ойын оқушы аты-жөнін енгізгеннен кейін басталады.
+
+</script></body></html>
